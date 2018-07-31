@@ -363,7 +363,7 @@ def reweight_add_lrc_lj(op, fe, epsilon, sigma, rc, volume, molsize, exclude=Fal
     
     .. math::
 
-       E_{tail}={\frac{8\pi\rho\epsilon}{3}\Biggl[\Bigl(\frac{\sigma}{r_c}\Bigr)^3-\frac{1}{3}\Bigl(\frac{\sigma}{r_c}\Bigr)^9\Biggr]},
+       E_{lrc}={\frac{8\pi\rho\epsilon}{3}\Biggl[\Bigl(\frac{\sigma}{r_c}\Bigr)^3-\frac{1}{3}\Bigl(\frac{\sigma}{r_c}\Bigr)^9\Biggr]},
 
     where :math:`\epsilon` and :math:`\sigma` are the Lennard-Jones parameters, and :math:`\rho`
     is the density of Lennard-Jones particles. We assume the system is comprised of :math:`N` molecules
@@ -410,7 +410,7 @@ def reweight_add_lrc_lj(op, fe, epsilon, sigma, rc, volume, molsize, exclude=Fal
 
     """
 
-    # TO DO: Better documentation: give the tail correction formula
+    # TO DO: Is the 'exclude' option in this function necessary?
     
     assert len(op) == len(fe), "op and fe must be of same length"
     
