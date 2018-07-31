@@ -1,0 +1,422 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>fep module documentation &#8212; fep 0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Documentation for the fep module" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-fep">
+<span id="fep-module-documentation"></span><h1>fep module documentation<a class="headerlink" href="#module-fep" title="Permalink to this headline">¶</a></h1>
+<p>This module contains functions for performing simple minimpulations of 
+free energy profiles.
+By <em>free energy profile</em> here I mean a function <span class="math">\(F(S)=-\ln p(S)\)</span>,
+where <span class="math">\(p(S)\)</span> is the probability of the system exhibiting some
+<em>order parameter</em> <span class="math">\(S\)</span>. 
+Note that the free energy profile <span class="math">\(F(S)\)</span> just defined is 
+<em>dimensionless</em> and does not include the usual <span class="math">\(k_BT\)</span> factor.</p>
+<p>Most of the functions here deal with thermodynamic ensembles 
+in which the probability of the system being in some configuration
+<span class="math">\(\sigma\)</span> is <span class="math">\(p_{\sigma}\propto\exp(-bS_{\sigma})\)</span>, where
+<span class="math">\(b\)</span> is the thermodynamic ‘force’ conjugate to the order parameter
+<span class="math">\(S\)</span>. For example, in the <span class="math">\(NVT\)</span> ensemble 
+<span class="math">\(p_{\sigma}\propto\exp(-\beta E_{\sigma})\)</span>, where <span class="math">\(\beta\)</span>
+is the thermodynamic beta and <span class="math">\(E\)</span> denotes the system energy. Hence 
+the below functions can be used for free energy profiles over <span class="math">\(E\)</span>
+obtained from <span class="math">\(NVT\)</span> simulations, with <span class="math">\(b=\beta\)</span>. 
+The same is true for <span class="math">\(NPT\)</span> and <span class="math">\(\mu VT\)</span> simulations, where 
+<span class="math">\(p_{\sigma}\)</span> is given by 
+<span class="math">\(p_{\sigma}\propto\exp(-\beta E_{\sigma}+\beta PV_{\sigma})\)</span> and
+<span class="math">\(p_{\sigma}\propto\exp(-\beta E_{\sigma}+\beta \mu N_{\sigma})\)</span>
+respectively, where <span class="math">\(P\)</span> denotes the system pressure, <span class="math">\(V\)</span>
+denotes the system volume, <span class="math">\(\mu\)</span> denotes the chemical potential,
+and <span class="math">\(N\)</span> denotes the number of particles in the system. Moreover
+in the <span class="math">\(NPT\)</span> ensemble one could alternatively consider free energy
+profiles over <span class="math">\(V\)</span>, in which case <span class="math">\(b=\beta P\)</span>; and in the 
+<span class="math">\(\mu VT\)</span> ensemble one could alternatively consider free energy
+profiles over <span class="math">\(N\)</span>, in which case <span class="math">\(b=\beta \mu\)</span>.</p>
+<p>Perhaps the most useful functions below perform single-histogram reweighting
+over the quantity <span class="math">\(b\)</span>: the functions take the free energy
+profile over <span class="math">\(S\)</span> at a given <span class="math">\(b\)</span>, and return the free energy
+profile at a different <span class="math">\(b\)</span>.</p>
+<dl class="docutils">
+<dt>Note:</dt>
+<dd>By <em>array</em> below we mean the <code class="docutils literal"><span class="pre">numpy.array</span></code> data type.</dd>
+</dl>
+<dl class="function">
+<dt id="fep.expected_op">
+<code class="descclassname">fep.</code><code class="descname">expected_op</code><span class="sig-paren">(</span><em>op</em>, <em>fe</em>, <em>op_thresh</em><span class="sig-paren">)</span><a class="headerlink" href="#fep.expected_op" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the expected order parameter of two phases for a free energy profile.</p>
+<p>Phase 1 is defined to be configurations for which the order
+parameter is less than or equal to some threshold order parameter
+<span class="math">\(S_{thresh}\)</span>; and phase 2 corresponds to order parameters <span class="math">\(&gt;S_{thresh}\)</span>.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><p class="first">op (array): An array containing the order parameter values.</p>
+<p>fe (array): An array containing the free energy values.</p>
+<dl class="last docutils">
+<dt>op_thresh (float): The threshold order parameter :math`S_{thresh}` </dt>
+<dd>defining the two phases.</dd>
+</dl>
+</dd>
+<dt>Returns:</dt>
+<dd><p class="first">float: The expected value of the order parameter for phase 1.</p>
+<p class="last">float: The expected value of the order parameter for phase 2.</p>
+</dd>
+<dt>Note:</dt>
+<dd>An expected value for a phase will be nan, and a <code class="docutils literal"><span class="pre">RuntimeWarning</span></code> will
+be thrown if the probability of the phase is 0 to within the precision 
+of the machine. In this case this function raises an additional warning
+to provide further context to the <code class="docutils literal"><span class="pre">RuntimeWarning</span></code>.</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="fep.fep_str">
+<code class="descclassname">fep.</code><code class="descname">fep_str</code><span class="sig-paren">(</span><em>op</em>, <em>fe</em><span class="sig-paren">)</span><a class="headerlink" href="#fep.fep_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a readable string representation of a free energy profile.</p>
+<p>The string has two columns. The first column contains the order parameters, while
+the second column contains the corresponding values of the free energy.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><p class="first">op (array): An array containing the order parameter values.</p>
+<p class="last">fe (array): An array containing the free energy values.</p>
+</dd>
+<dt>Returns:</dt>
+<dd>string: The string representation of the free energy profile.</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="fep.from_file">
+<code class="descclassname">fep.</code><code class="descname">from_file</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="headerlink" href="#fep.from_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Import a free energy profile from a file.</p>
+<p>The format of the file should be as follows. Each line corresponds to an
+order parameter, with the first token on the line being the order
+parameter, and the second token being the dimensionless free energy.
+The line may contain further tokens, but these are not used here.
+Moreover lines in the file beginning with ‘#’ are treated as 
+comments and ignored.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>filename (str): The name of the file to import.</dd>
+<dt>Returns:</dt>
+<dd><p class="first">array: An array containing the order parameter values read from the file.</p>
+<p class="last">array: An array containing the free energy values read from the file.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="fep.from_str">
+<code class="descclassname">fep.</code><code class="descname">from_str</code><span class="sig-paren">(</span><em>string</em><span class="sig-paren">)</span><a class="headerlink" href="#fep.from_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Import a free energy profile from a string.</p>
+<p>The format of the string should be as follows. Each line corresponds to
+an order parameter, with the first token on the line being the order 
+parameter, and the second token being the dimensionless free energy. 
+The line may contain further tokens, but these are not used here.
+Moreover lines beginning with ‘#’ are treated as comments and
+ignored.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>string (str): The string containing the free energy profile.</dd>
+<dt>Returns:</dt>
+<dd><p class="first">array: An array containing the order parameter values read from the string.</p>
+<p class="last">array: An array containing the free energy values read from the string.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="fep.pdf">
+<code class="descclassname">fep.</code><code class="descname">pdf</code><span class="sig-paren">(</span><em>fe</em><span class="sig-paren">)</span><a class="headerlink" href="#fep.pdf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the probability distribution for a free energy profile.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>fe (array): An array containing the free energy values.</dd>
+<dt>Returns:</dt>
+<dd><dl class="first last docutils">
+<dt>array: An array of floats giving the probability corresponding to each</dt>
+<dd>element in <cite>fe</cite>.</dd>
+</dl>
+</dd>
+<dt>Note:</dt>
+<dd>The returned probability distribution is such that the sum over all elements is
+1 (which is not the same as the integral over the interpolated profile
+being 1!)</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="fep.phase_probs">
+<code class="descclassname">fep.</code><code class="descname">phase_probs</code><span class="sig-paren">(</span><em>op</em>, <em>fe</em>, <em>op_thresh</em><span class="sig-paren">)</span><a class="headerlink" href="#fep.phase_probs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the probabilities of two phases for a free energy profile.</p>
+<p>Phase 1 is defined to be configurations for which the order
+parameter is less than or equal to some threshold order parameter
+<span class="math">\(S_{thresh}\)</span>; and phase 2 corresponds to order parameters <span class="math">\(&gt;S_{thresh}\)</span>.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><p class="first">op (array): An array containing the order parameter values.</p>
+<p>fe (array): An array containing the free energy values.</p>
+<dl class="last docutils">
+<dt>op_thresh (float): The threshold order parameter <span class="math">\(S_{thresh}\)</span></dt>
+<dd>defining the two phases.</dd>
+</dl>
+</dd>
+<dt>Returns:</dt>
+<dd><p class="first">float: The probability of phase 1.</p>
+<p class="last">float: The probability of phase 2.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="fep.reweight">
+<code class="descclassname">fep.</code><code class="descname">reweight</code><span class="sig-paren">(</span><em>op</em>, <em>fe</em>, <em>b_current</em>, <em>b_new</em><span class="sig-paren">)</span><a class="headerlink" href="#fep.reweight" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reweight a free energy profile to a new thermodynamic force.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><p class="first">op (array): An array containing the order parameter values.</p>
+<p>fe (array): An array containing the free energy values.</p>
+<dl class="docutils">
+<dt>b_current (float): The value of the force, which the current free energy </dt>
+<dd>profile corresponds to.</dd>
+</dl>
+<p class="last">b_new (float): The value of the force to reweight the free energy profile to</p>
+</dd>
+<dt>Returns:</dt>
+<dd><dl class="first last docutils">
+<dt>array: The free energies corresponding to <cite>op</cite>, but reweighted to the chemical</dt>
+<dd>potential <cite>mu_new</cite></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="fep.reweight_add_lrc_lj">
+<code class="descclassname">fep.</code><code class="descname">reweight_add_lrc_lj</code><span class="sig-paren">(</span><em>op</em>, <em>fe</em>, <em>epsilon</em>, <em>sigma</em>, <em>rc</em>, <em>volume</em>, <em>molsize</em>, <em>exclude=False</em><span class="sig-paren">)</span><a class="headerlink" href="#fep.reweight_add_lrc_lj" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reweight a free energy profile over <span class="math">\(N\)</span> to add Lennard-Jones long-range corrections.</p>
+<p>This function reweights a free energy profile, assuming that the order parameter is
+the number of molecules in the system <span class="math">\(N\)</span> (as cwould be obtained from, e.g.
+a <span class="math">\(\mu VT\)</span> simulation), to add long-range corrections for Lennard-Jones interactions 
+between particles (assuming that the profile currently corresponds to a system where 
+they are absent).</p>
+<p>The long-range correction to the energy per Lennard-Jones particle is</p>
+<div class="math">
+\[E_{tail}={\frac{8\pi\rho\epsilon}{3}\Biggl[\Bigl(\frac{\sigma}{r_c}\Bigr)^3-\frac{1}{3}\Bigl(\frac{\sigma}{r_c}\Bigr)^9\Biggr]},\]</div>
+<p>where <span class="math">\(\epsilon\)</span> and <span class="math">\(\sigma\)</span> are the Lennard-Jones parameters, and <span class="math">\(\rho\)</span>
+is the density of Lennard-Jones particles. We assume the system is comprised of <span class="math">\(N\)</span> molecules
+comprised of <span class="math">\(n\)</span> atoms interacting via the Lennard-Jones potential, in which case
+<span class="math">\(\rho=Nn/V\)</span>, where <span class="math">\(V\)</span> is the volume of the system.</p>
+<p>Here the free energy profile is assumed to pertain to a simulation where the
+volume is constant, the system is comprised of molecules with <cite>molsize</cite> atoms Lennard-Jones
+interaction centres, and long-range corrections have not been included. Moreover the 
+system is assumed to be homogenous (as is always the assumption when applying standard 
+long-range corrections).</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><p class="first">op (array): An array containing the order parameter values.</p>
+<p>fe (array): An array containing the free energy values.</p>
+<dl class="docutils">
+<dt>epsilon (float): The value of the Lennard-Jones parameter <span class="math">\(\epsilon\)</span>, in units of </dt>
+<dd><span class="math">\(k_BT\)</span> (i.e. <span class="math">\(\epsilon/kT\)</span>).</dd>
+</dl>
+<p>sigma (float): The value of the Lennard-Jones parameter <span class="math">\(\sigma\)</span>.</p>
+<p>rc (float): The cut-off distance for the Lennard-Jones potential.</p>
+<p>volume (float): The volume of the system.</p>
+<p>molsize (int): The number of Lennard-Jones interaction centres per molecule.</p>
+<dl class="last docutils">
+<dt>exclude (boolean): If <cite>true</cite> then <span class="math">\(\rho\)</span> used in the above equation is chosen</dt>
+<dd>to be <span class="math">\(\rho=(Nn-n)/V\)</span> instead of <span class="math">\(Nn/V\)</span>. If the intramolecular
+contribution to the Lennard-Jones energy is <em>excluded</em> from the total energy, then
+<span class="math">\(\rho=(Nn-n)/V\)</span> corresponds to also excluding interactions with all images of
+the molecule with regards to the long-range corrections (though this is a weird thing
+to do).</dd>
+</dl>
+</dd>
+<dt>Returns:</dt>
+<dd><dl class="first last docutils">
+<dt>array: The free energies corresponding to <cite>op</cite>, but with long-range corrections added</dt>
+<dd>via reweighting</dd>
+</dl>
+</dd>
+<dt>Note: </dt>
+<dd>By passing a negative value for <cite>epsilon</cite>, this function can be used to remove
+long-range corrections from a free energy profile corresponding to a simulation which
+incorporates long-range corrections.</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="fep.reweight_to_coexistence">
+<code class="descclassname">fep.</code><code class="descname">reweight_to_coexistence</code><span class="sig-paren">(</span><em>op</em>, <em>fe</em>, <em>b_current</em>, <em>b_lbound</em>, <em>b_ubound</em>, <em>op_thresh</em>, <em>tol=1.48e-08</em>, <em>maxiter=50</em>, <em>warn_tol=0.05</em><span class="sig-paren">)</span><a class="headerlink" href="#fep.reweight_to_coexistence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reweight a free energy profile to a thermodynamic force which corresponds to
+coexistence.</p>
+<p>Here coexistence corresponds to the system being in phase 1 and phase 2 with
+equal probability, where phase 1 is defined as the set of configurations for
+which the order parameter is less than or equal to some threshold order parameter
+<span class="math">\(S_{thresh}\)</span>, and phase 2 corresponds to order parameters <span class="math">\(&gt;S_{thresh}\)</span>.</p>
+<p>Brent’s method is used to locate <span class="math">\(b_{co}\)</span>, the thermodynamic force corresponding
+to coexistence. This is achieved by determining the minimum in <span class="math">\(|p_1(b)-0.5|\)</span>, where 
+<span class="math">\(p_1(b)\)</span> denotes the phase 1 probability at thermodynamic force <span class="math">\(b\)</span>. The 
+function <code class="docutils literal"><span class="pre">scipy.optimize.brent</span></code> is used to perform the optimisation.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><p class="first">op (array): An array containing the order parameter values.</p>
+<p>fe (array): An array containing the free energy values.</p>
+<dl class="docutils">
+<dt>b_current (float): The thermodynamic force <span class="math">\(b\)</span> which the free energy </dt>
+<dd>profile <cite>fe</cite> corresponds to.</dd>
+</dl>
+<p>b_lbound (float): Lower bound on <span class="math">\(b\)</span> used in the search for coexistence.</p>
+<p>b_ubound (float): Upper bound on <span class="math">\(b\)</span> used in the search for coexistence.</p>
+<p>op_thresh (float): The threshold order parameter <span class="math">\(S_{thresh}\)</span> defining the two phases.</p>
+<dl class="docutils">
+<dt>tol (float, optional): Convergence threshold for Brent’s method.</dt>
+<dd>The optimisation is stopped if subsequent iterations yield a change in the objective function
+of less than <cite>tol</cite>. Thus <cite>tol</cite> is effectively the precision in to which <span class="math">\(b_{co}\)</span> is
+to be determined; <span class="math">\(b_{co}\)</span> corresponds to the probability of phase 1 being 0.5 to a 
+precision of approximately <cite>tol</cite>.</dd>
+</dl>
+<p>maxiter (int, optional): Maximum number of iterations to use in Brent’s method.</p>
+<dl class="last docutils">
+<dt>warn_tol (float, optional): A warning is raised if the probability of phase 1 at the <span class="math">\(b_co\)</span></dt>
+<dd>determined by this function is greater than <cite>warn_tol</cite> away from 0.5.</dd>
+</dl>
+</dd>
+<dt>Returns:</dt>
+<dd><p class="first">float: The thermodynamic force <span class="math">\(b_{co}\)</span> deemed to correspond to coexistence.</p>
+<dl class="docutils">
+<dt>float: The probability of phase 1 at <span class="math">\(b_{co}\)</span>. Note that</dt>
+<dd>this should be very close to 0.5, otherwise the optimisation has not gone
+according to plan for some reason.</dd>
+</dl>
+<p class="last">array: The free energy profile at <span class="math">\(b_{co}\)</span>.</p>
+</dd>
+<dt>Note:</dt>
+<dd><p class="first">The optimisation method assumes that <cite>b_lbound</cite> and <cite>b_ubound</cite> bracket
+<span class="math">\(b_{co}\)</span>. If this is not the case then a warning is raised.</p>
+<p>A warning is raised if the <span class="math">\(b_co\)</span> determined by this function is greater than
+<cite>warn_tol</cite> away from 0.5.</p>
+<p class="last">A warning is raised if the maximum number of iterations in the optimisation procedure is
+reached.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="fep.shift">
+<code class="descclassname">fep.</code><code class="descname">shift</code><span class="sig-paren">(</span><em>fe</em><span class="sig-paren">)</span><a class="headerlink" href="#fep.shift" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shifts a free energy profile so that its minimum is at 0.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>fe (array): An array containing the free energy values.</dd>
+<dt>Returns:</dt>
+<dd>array: The free energy values shifted so that the minimum value is 0.</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="fep.to_file">
+<code class="descclassname">fep.</code><code class="descname">to_file</code><span class="sig-paren">(</span><em>op</em>, <em>fe</em>, <em>filename</em><span class="sig-paren">)</span><a class="headerlink" href="#fep.to_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Export a free energy profile to a file.</p>
+<p>In the file the free energy profile is represented as two columns. The first 
+column contains the order parameters, while the second column contains the 
+corresponding values of the free energy.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><p class="first">op (array): An array containing the order parameter values.</p>
+<p>fe (array): An array containing the free energy values.</p>
+<p class="last">filename (string):  The name of the file to export the free energy profile to.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">Documentation for the fep module</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/code.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Tom L. Underwood.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/code.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

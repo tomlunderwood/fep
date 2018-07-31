@@ -1,0 +1,22 @@
+TraPPE force-field CH4, 9A cut-off
+CUTOFF 9.0
+UNITS K
+NCONFIGS 1
+ATOMS 2
+C core 1.0 0.0
+M core 1.0 0.0
+MOLTYPES 1
+ch4
+ATOMS 5 5
+C core  0.00 0.00 0.00
+M core  0.51854497 0.0 -0.1833333
+M core  -0.2592725 0.44907312 -0.1833333
+M core  -0.2592725 -0.44907312 -0.1833333
+M core  0.00 0.00 0.55
+RIGID
+EXCLUDE
+FINISH
+VDW 1 
+M core       M core      lj    15.3 3.31
+CLOSE
+
