@@ -1,5 +1,3 @@
-# TO DO: Add a license here
-
 r"""
 .. moduleauthor:: Tom L. Underwood
 
